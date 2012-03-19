@@ -1,0 +1,6 @@
+[
+	{
+		"keys":["backspace"],
+		"command": "gobble"
+	}
+]
