@@ -12,13 +12,20 @@ class GobbleCommand(sublime_plugin.TextCommand):
 		if(len(sel) == 1):
 			passThrough = not (sel[0].empty())
 
+		cursorPoint = sel[0].begin();
+		lineRegion = self.view.line(cursorPoint)
+
+		# In whitespace-indented languages, if someone presses backspace on an empty line, 
+		# it probably means "go to the previous level of indentation"
+		# So in that case, just pass-through!
+		if(cursorPoint == lineRegion.end()):
+			passThrough = True
+
 		if(passThrough):
 			self.view.run_command("left_delete")
 			return
 
-		# Execute gobble
-		cursorPoint = sel[0].a;
-		lineStartPoint = self.view.line(cursorPoint).a
+		lineStartPoint = lineRegion.begin()
 		lineUptilPoint = self.view.substr(sublime.Region(lineStartPoint, cursorPoint))
 
 		if(not re.match('^\s+$', lineUptilPoint)):
